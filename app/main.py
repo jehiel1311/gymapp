@@ -1,6 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
+from pathlib import Path
 from . import db
 
 app = FastAPI(title='GymApp')
@@ -8,26 +9,14 @@ app = FastAPI(title='GymApp')
 # Mount images folder
 app.mount('/img', StaticFiles(directory=db.IMG_DIR), name='img')
 
+# Path al template de la página principal
+INDEX_TEMPLATE = Path(__file__).resolve().parent / 'templates' / 'index.html'
+
 
 @app.get('/', response_class=HTMLResponse)
 def read_root():
-    """Homepage with basic links and example exercises."""
-    exercises = db.get_exercises()[:5]
-    items = ''.join(f"<li>{ex['Nombre (ES)']}</li>" for ex in exercises)
-    html_content = f"""
-    <html>
-        <head>
-            <title>GymApp</title>
-        </head>
-        <body>
-            <h1>Bienvenido a GymApp</h1>
-            <p><a href='/exercises'>Ver ejercicios</a></p>
-            <p><a href='/docs'>Documentación de la API</a></p>
-            <h2>Algunos ejercicios</h2>
-            <ul>{items}</ul>
-        </body>
-    </html>
-    """
+    """Retorna la página principal con el lienzo de diseño."""
+    html_content = INDEX_TEMPLATE.read_text(encoding='utf-8')
     return HTMLResponse(content=html_content)
 
 @app.get('/exercises')

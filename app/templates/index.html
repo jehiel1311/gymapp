@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>GymApp - Lienzo de Diseño</title>
+</head>
+<body>
+    <h1>GymApp - App de Rutinas de Gimnasio</h1>
+    <p>Este documento resume las características principales de la aplicación de rutinas y la base de datos integrada.</p>
+
+    <h2>1. Propósito General</h2>
+    <p>Desarrollar una aplicación que centralice una base de datos exhaustiva de ejercicios de musculación y fitness, integrando rutinas, seguimiento y visualización de imágenes anatómicas. El sistema debe permitir personalización y adaptarse a distintos objetivos.</p>
+    <ul>
+        <li>Registro de usuario y perfil físico con datos opcionales como edad, peso y objetivos.</li>
+        <li>Los datos se usan para adaptar rutinas, análisis y recomendaciones.</li>
+    </ul>
+
+    <h2>2. Estructura de la Base de Datos (Excel)</h2>
+    <p><strong>Archivo fuente:</strong> <code>BD_Ejercicios_mejorada_v8.xlsx</code></p>
+    <p>Columnas principales:</p>
+    <ul>
+        <li><strong>ID:</strong> Identificador único (ej. EX0001)</li>
+        <li><strong>Nombre (ES):</strong> Nombre en español</li>
+        <li><strong>Nombre (EN):</strong> Nombre en inglés</li>
+        <li><strong>Zona principal:</strong> Músculo o grupo muscular principal</li>
+        <li><strong>Músculos secundarios:</strong> Otros músculos involucrados</li>
+        <li><strong>Detalle/Descripción:</strong> Guía técnica y consejos de ejecución</li>
+        <li><strong>Imagen:</strong> Ruta del archivo (ej. <code>/img/EX0001.jpg</code>)</li>
+    </ul>
+
+    <h2>3. Gestión de Imágenes</h2>
+    <ul>
+        <li>Cada ejercicio cuenta con una imagen anatómica representativa ubicada en <code>/img/</code>.</li>
+        <li>Formato de nombre: <code>[ID].jpg</code> con tamaño estándar de 124 x 124 px.</li>
+    </ul>
+
+    <h2>4. Estructura y Funcionalidad de la App</h2>
+    <h3>a. Backend</h3>
+    <ul>
+        <li>Lectura de la base Excel y consultas filtradas.</li>
+        <li>Gestión de rutinas personalizadas y registro de progresos.</li>
+    </ul>
+    <h3>b. Frontend</h3>
+    <ul>
+        <li>Visualización de ejercicios y filtros por zona muscular, equipo o nivel.</li>
+        <li>Calendario de entrenamientos y carga rápida de progresos.</li>
+    </ul>
+    <h3>c. Funcionalidades Clave</h3>
+    <ul>
+        <li>Buscador de ejercicios.</li>
+        <li>Generador de rutina automática según objetivo y nivel.</li>
+        <li>Historial de seguimiento y análisis mensual.</li>
+    </ul>
+
+    <h2>5. Reglas y Buenas Prácticas</h2>
+    <ul>
+        <li>ID único e inalterable para cada ejercicio.</li>
+        <li>Actualización centralizada en el Excel.</li>
+        <li>Backup antes de cambios estructurales.</li>
+        <li>Esquema preparado para futuros campos opcionales.</li>
+    </ul>
+
+    <h2>6. Flujo de Trabajo Sugerido</h2>
+    <ol>
+        <li>Carga y revisión del Excel.</li>
+        <li>Mapeo de columnas y sincronización de imágenes.</li>
+        <li>Desarrollo del frontend y pruebas.</li>
+        <li>Iteración y mejoras continuas.</li>
+    </ol>
+
+    <h2>7. Observaciones Finales</h2>
+    <ul>
+        <li>El Excel es el núcleo del sistema.</li>
+        <li>Las imágenes deben estar correctamente nombradas y ubicadas.</li>
+        <li>El diseño facilita la consulta y el mantenimiento de la base de datos.</li>
+    </ul>
+</body>
+</html>
