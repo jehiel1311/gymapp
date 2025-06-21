@@ -25,3 +25,5 @@ uvicorn app.main:app
 ```
 
 The API will be available at `http://127.0.0.1:8000` by default.
+
+Visita la raíz (`/`) para consultar el **Lienzo de Diseño** que describe la estructura de la aplicación y la base de datos.
