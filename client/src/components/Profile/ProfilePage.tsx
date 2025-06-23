@@ -1,6 +1,8 @@
+import { useNavigate } from 'react-router-dom'
 import { useUser } from '../../hooks/useUser'
 
 export default function ProfilePage() {
+  const navigate = useNavigate()
   const { user } = useUser()
 
   if (!user) return <p>No hay datos de usuario.</p>
@@ -10,13 +12,19 @@ export default function ProfilePage() {
 
   return (
     <div className="p-4 space-y-4">
-      <section>
-        <h2 className="text-xl font-bold">Datos Básicos</h2>
+      <section style={{ minHeight: '33vh' }} className="border-b">
+        <h2 className="text-xl font-bold mb-2">Perfil</h2>
         <p>Nombre: {user.nombre}</p>
-        <p>Email: {user.email}</p>
         <p>Edad: {edad}</p>
-        <p>Objetivo: {user.objetivo}</p>
         <p>Nivel: {user.nivel}</p>
+        <p>Actividad: {user.actividad}</p>
+        <p>Objetivo: {user.objetivo}</p>
+        <button
+          onClick={() => navigate('/calendario')}
+          className="mt-2 bg-gray-500 text-white px-4 py-2"
+        >
+          Ir a Calendario
+        </button>
       </section>
       <section>
         <h2 className="text-xl font-bold">Estado Físico</h2>
@@ -54,7 +62,6 @@ export default function ProfilePage() {
       )}
       <div className="space-x-2">
         <button className="bg-blue-500 text-white px-4 py-2">Editar Perfil</button>
-        <button className="bg-gray-500 text-white px-4 py-2">Ir a Calendario</button>
       </div>
     </div>
   )

@@ -9,6 +9,7 @@ export interface User {
   alturaCm: number
   pesoKg: number
   nivel: 'Principiante' | 'Intermedio' | 'Avanzado'
+  actividad: 'Sedentaria' | 'Ligera' | 'Moderada' | 'Intensa'
   objetivo: 'Masa' | 'Definición' | 'Resistencia' | 'Mantenimiento'
   diasDisponibles: DayOfWeek[]
   equipo?: string
