@@ -18,12 +18,20 @@ pip install -r requirements.txt
 
 ## Running the application
 
-From the repository root, start the development server with:
+First build the React frontend:
+
+```bash
+cd client
+npm install
+npm run build
+```
+
+Then start the FastAPI server from the repository root:
 
 ```bash
 uvicorn app.main:app
 ```
 
-The API will be available at `http://127.0.0.1:8000` by default.
+The app (React frontend + API) will be available at `http://127.0.0.1:8000`.
 
-Visita la raíz (`/`) para consultar el **Lienzo de Diseño** que describe la estructura de la aplicación y la base de datos.
+The original design canvas is now located at `/design`.
