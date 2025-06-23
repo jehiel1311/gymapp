@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import './App.css'
+import UserForm from './UserForm'
 
 interface Exercise {
   ID: string
@@ -31,6 +32,7 @@ function App() {
 
   return (
     <div className="container">
+      <UserForm />
       <h1>Gym Exercises</h1>
       <div className="grid">
         {exercises.map(ex => (
