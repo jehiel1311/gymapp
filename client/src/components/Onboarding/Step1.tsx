@@ -12,6 +12,7 @@ const step1Schema = z.object({
   alturaCm: z.number({ invalid_type_error: 'Número' }).min(30).max(300),
   pesoKg: z.number({ invalid_type_error: 'Número' }).min(20).max(500),
   nivel: z.enum(['Principiante', 'Intermedio', 'Avanzado']),
+  actividad: z.enum(['Sedentaria', 'Ligera', 'Moderada', 'Intensa']),
   objetivo: z.enum(['Masa', 'Definición', 'Resistencia', 'Mantenimiento']),
   diasDisponibles: z.array(z.enum(['L','M','X','J','V','S','D'])).min(1)
 })
@@ -70,6 +71,15 @@ export default function Step1() {
           <option value="Principiante">Principiante</option>
           <option value="Intermedio">Intermedio</option>
           <option value="Avanzado">Avanzado</option>
+        </select>
+      </div>
+      <div>
+        <label>Actividad física</label>
+        <select className="block w-full" {...register('actividad')}>
+          <option value="Sedentaria">Sedentaria</option>
+          <option value="Ligera">Ligera</option>
+          <option value="Moderada">Moderada</option>
+          <option value="Intensa">Intensa</option>
         </select>
       </div>
       <div>
