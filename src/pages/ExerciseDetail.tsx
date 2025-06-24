@@ -1,12 +1,25 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
+import data from "../data/exercises.json";
+import { Exercise } from "../components/ExerciseCard";
 
 export default function ExerciseDetail() {
-  const { id } = useParams<{ id: string }>();
+  const { id } = useParams();
+  const nav = useNavigate();
+  const ex = data.find((e: Exercise) => e.id === id);
+
+  if (!ex) return <p>No encontrado</p>;
 
   return (
-    <div style={{ padding: "1rem" }}>
-      <h2>Detalle del ejercicio</h2>
-      <p>ID: {id}</p>
-    </div>
+    <article style={{ padding: "1rem" }}>
+      <button onClick={() => nav(-1)} style={{ marginBottom: ".5rem" }}>
+        ◄ Volver
+      </button>
+      <img src={`/img/${ex.id}.jpg`} alt={ex.nombre} />
+      <h2 style={{ color: "var(--color-primary)" }}>{ex.nombre}</h2>
+      <p>
+        <strong>Zona principal:</strong> {ex.zonaPrincipal}
+      </p>
+      <p>{ex.detalle}</p>
+    </article>
   );
 }
