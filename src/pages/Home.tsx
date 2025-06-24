@@ -1,11 +1,12 @@
 import { useState } from "react";
-import data from "../data/exercises.json"; // temporal
-import ExerciseCard, { Exercise } from "../components/ExerciseCard";
+import ExerciseCard from "../components/ExerciseCard";
+import { Exercise, useExercises } from "../context/ExerciseContext";
 import SearchBar from "../components/SearchBar";
 
 export default function Home() {
+  const { exercises } = useExercises();
   const [query, setQuery] = useState("");
-  const filtered = data.filter((e: Exercise) =>
+  const filtered = exercises.filter((e: Exercise) =>
     e.nombre.toLowerCase().includes(query.toLowerCase())
   );
 
@@ -24,9 +25,6 @@ export default function Home() {
           <ExerciseCard
             key={ex.id}
             exercise={ex}
-            onSelect={() => {
-              /* navigate al detalle */
-            }}
           />
         ))}
       </section>

@@ -1,11 +1,11 @@
 import { useParams, useNavigate } from "react-router-dom";
-import data from "../data/exercises.json";
-import { Exercise } from "../components/ExerciseCard";
+import { Exercise, useExercises } from "../context/ExerciseContext";
 
 export default function ExerciseDetail() {
   const { id } = useParams();
   const nav = useNavigate();
-  const ex = data.find((e: Exercise) => e.id === id);
+  const { exercises } = useExercises();
+  const ex = exercises.find((e: Exercise) => e.id === id);
 
   if (!ex) return <p>No encontrado</p>;
 
