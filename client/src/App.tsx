@@ -12,12 +12,16 @@ export default function App() {
 
   return (
     <UserProvider>
-      <div style={{ position: 'fixed', top: 10, right: 10 }}>
+      <header className="header">
+        <span>GymApp</span>
         <button onClick={() => setDark(d => !d)}>
           Modo {dark ? 'claro' : 'oscuro'}
         </button>
+      </header>
+      <div className="main">
+        <OnboardingRouter />
       </div>
-      <OnboardingRouter />
+      <footer className="footer">© 2024 GymApp</footer>
     </UserProvider>
   )
 }
