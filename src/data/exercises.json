@@ -1,0 +1,22 @@
+[
+  {
+    "id": "EX0001",
+    "nombre": "Dominadas",
+    "zonaPrincipal": "Espalda"
+  },
+  {
+    "id": "EX0002",
+    "nombre": "Biceps con agarre supino",
+    "zonaPrincipal": "Bíceps"
+  },
+  {
+    "id": "EX0003",
+    "nombre": "Dominada Horizontal",
+    "zonaPrincipal": "Espalda"
+  },
+  {
+    "id": "EX0004",
+    "nombre": "Dominada Bombero",
+    "zonaPrincipal": "Espalda"
+  }
+]
