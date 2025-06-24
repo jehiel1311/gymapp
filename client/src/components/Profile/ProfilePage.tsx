@@ -25,6 +25,12 @@ export default function ProfilePage() {
         >
           Ir a Calendario
         </button>
+        <button
+          onClick={() => navigate('/ejercicios')}
+          className="ml-2 mt-2 bg-blue-600 text-white px-4 py-2"
+        >
+          Ver Ejercicios
+        </button>
       </section>
       <section>
         <h2 className="text-xl font-bold">Estado Físico</h2>
