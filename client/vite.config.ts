@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
-// ¡IMPORTANTE! Esto es para deploy en GitHub Pages en /gymapp/
+// ¡IMPORTANTE! Base para deployar en GitHub Pages dentro de /gymapp/
 export default defineConfig({
   plugins: [react()],
   base: '/gymapp/',
