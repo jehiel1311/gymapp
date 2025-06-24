@@ -16,6 +16,16 @@ Install the required Python packages:
 pip install -r requirements.txt
 ```
 
+## Updating the exercises dataset
+
+If you modify `Ejercicios-base.xlsx`, regenerate the JSON version used by the
+frontend with the helper script:
+
+```bash
+python tools/excel_to_json.py Ejercicios-base.xlsx src/data/exercises.json
+```
+
+
 ## Running the application
 
 First build the React frontend:
