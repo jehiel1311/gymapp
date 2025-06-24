@@ -1,27 +1,17 @@
-import OnboardingRouter from './components/Onboarding/OnboardingRouter'
-import { UserProvider } from './hooks/useUser'
-import { useEffect, useState } from 'react'
-import './App.css'
-
-export default function App() {
-  const [dark, setDark] = useState(false)
-
-  useEffect(() => {
-    document.body.className = dark ? 'dark' : 'light'
-  }, [dark])
-
+function App() {
   return (
-    <UserProvider>
-      <header className="header">
-        <span>GymApp</span>
-        <button onClick={() => setDark(d => !d)}>
-          Modo {dark ? 'claro' : 'oscuro'}
-        </button>
-      </header>
-      <div className="main">
-        <OnboardingRouter />
-      </div>
-      <footer className="footer">© 2024 GymApp</footer>
-    </UserProvider>
-  )
+    <div style={{
+      minHeight: '100vh',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      background: '#F5F5F5',
+      flexDirection: 'column'
+    }}>
+      <h1 style={{ color: '#800020', fontSize: '2.2rem' }}>ENTRENAPP</h1>
+      <p style={{ color: '#555', fontSize: '1.1rem' }}>Landing funcional - prueba de deploy</p>
+    </div>
+  );
 }
+
+export default App;
