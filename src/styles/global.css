@@ -30,3 +30,21 @@ button {
   font: inherit;
   cursor: pointer;
 }
+
+.landing {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 1rem;
+}
+
+.primary {
+  background: var(--color-primary);
+  color: #fff;
+  border-radius: 4px;
+  padding: 0.9rem 2rem;
+  font-size: 1.1rem;
+}
