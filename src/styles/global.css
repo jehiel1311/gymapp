@@ -11,9 +11,8 @@
   box-sizing: border-box;
 }
 
-html,
 body {
-  font-family: "Roboto", sans-serif;
+  font-family: Roboto, sans-serif;
   background: var(--color-light);
   color: var(--color-dark);
 }
