@@ -1,8 +1,7 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
 
-// ¡IMPORTANTE! Base para deployar en GitHub Pages dentro de /gymapp/
 export default defineConfig({
+  base: "/gymapp/", // ¡clave para GitHub Pages!
   plugins: [react()],
-  base: '/gymapp/',
-})
+});
