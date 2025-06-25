@@ -48,3 +48,9 @@ button {
   padding: 0.9rem 2rem;
   font-size: 1.1rem;
 }
+
+.grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+}
