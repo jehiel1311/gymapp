@@ -1,12 +1,19 @@
-import { Routes, Route } from "react-router-dom";
-import Landing from "./pages/Landing";
-import Home from "./pages/Home";
+import { BrowserRouter, Routes, Route, NavLink } from "react-router-dom";
+import ExercisesPage from "./pages/ExercisesPage";
+import HistoryPage from "./pages/HistoryPage";
+import "./App.css";
 
 export default function App() {
   return (
-    <Routes>
-      <Route path="/" element={<Landing />} />
-      <Route path="/home" element={<Home />} />
-    </Routes>
+    <BrowserRouter basename="/gymapp">
+      <nav className="nav">
+        <NavLink to="/" end>Ejercicios</NavLink>
+        <NavLink to="/historial">Historial</NavLink>
+      </nav>
+      <Routes>
+        <Route path="/" element={<ExercisesPage/>} />
+        <Route path="/historial" element={<HistoryPage/>} />
+      </Routes>
+    </BrowserRouter>
   );
 }
