@@ -1,11 +1,17 @@
 import { Exercise, useExercises } from "../context/ExerciseContext";
 
 import styles from "./ExerciseCard.module.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { getPR } from "../services/workout";
 
 export default function ExerciseCard({ exercise }: { exercise: Exercise }) {
   const { toggle, selected } = useExercises();
   const [loaded, setLoaded] = useState(false);
+  const [pr, setPr] = useState<number | null>(null);
+
+  useEffect(() => {
+    getPR(exercise.id).then(setPr);
+  }, [exercise.id]);
   const isSel = selected.some(e => e.id === exercise.id);
   return (
     <button
@@ -22,6 +28,7 @@ export default function ExerciseCard({ exercise }: { exercise: Exercise }) {
       </div>
       <h3>{exercise.nombre}</h3>
       <small>{exercise.zonaPrincipal}</small>
+      <small>PR: {pr === null ? "-" : `${pr} kg`}</small>
     </button>
   );
 }
