@@ -7,3 +7,4 @@ client/node_modules/
 
 # Misc
 *.log
+src/config/firebaseConfig.ts
