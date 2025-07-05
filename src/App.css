@@ -9,3 +9,7 @@ body{margin:0;font-family:system-ui,sans-serif;}
 .card:hover{box-shadow:0 2px 8px rgba(0,0,0,.15);} 
 .card img{width:124px;height:124px;object-fit:cover;border-radius:4px;}
 .record{color:#e53935;font-weight:600;font-size:.9rem;margin:.25rem 0 0;}
+
+/* oculta nav en landing */
+.nav{justify-content:center}
+body:has(.landing) .nav{display:none}
