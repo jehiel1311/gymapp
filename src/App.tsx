@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, NavLink } from "react-router-dom";
+import { HashRouter, Routes, Route, NavLink } from "react-router-dom";
 import LandingPage from "./pages/LandingPage";
 import ExercisesPage from "./pages/ExercisesPage";
 import HistoryPage from "./pages/HistoryPage";
@@ -6,7 +6,7 @@ import "./App.css";
 
 export default function App() {
   return (
-    <BrowserRouter basename="/gymapp">
+    <HashRouter basename="">
       <nav className="nav">
         <NavLink to="/ejercicios">Ejercicios</NavLink>
         <NavLink to="/historial">Historial</NavLink>
@@ -16,6 +16,6 @@ export default function App() {
         <Route path="/ejercicios" element={<ExercisesPage/>} />
         <Route path="/historial" element={<HistoryPage/>} />
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
