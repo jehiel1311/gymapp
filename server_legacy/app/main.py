@@ -6,8 +6,22 @@ from . import db
 
 app = FastAPI(title='GymApp')
 
+SERVER_DIR = Path(__file__).resolve().parent.parent
+REPO_DIR = SERVER_DIR.parent
+
+
+def _first_existing_path(*paths: Path) -> Path:
+    for candidate in paths:
+        if candidate.exists():
+            return candidate
+    return paths[0]
+
+
 # Path to the frontend build directory
-FRONTEND_DIR = Path(__file__).resolve().parent.parent / 'client' / 'dist'
+FRONTEND_DIR = _first_existing_path(
+    REPO_DIR / 'client' / 'dist',
+    SERVER_DIR / 'client' / 'dist',
+)
 
 # Mount images folder
 app.mount('/img', StaticFiles(directory=db.IMG_DIR), name='img')
