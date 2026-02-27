@@ -1,7 +1,12 @@
-import Landing from "./Landing";
+import OnboardingRouter from './components/Onboarding/OnboardingRouter'
+import { UserProvider } from './hooks/useUser'
 
 function App() {
-  return <Landing />;
+  return (
+    <UserProvider>
+      <OnboardingRouter />
+    </UserProvider>
+  )
 }
 
-export default App;
+export default App

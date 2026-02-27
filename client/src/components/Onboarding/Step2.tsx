@@ -29,7 +29,7 @@ export default function Step2() {
   const { setUserData, finalizeUser } = useUser()
 
   const onSubmit = async (data: Step2Data) => {
-    setUserData({
+    const payload = {
       equipo: data.equipo,
       lesiones: data.lesiones,
       medidas: data.medidas,
@@ -37,8 +37,10 @@ export default function Step2() {
         pesoMensual: data.notificaciones?.pesoMensual ?? false,
         diarioSesion: data.notificaciones?.diarioSesion ?? false,
       },
-    })
-    await finalizeUser()
+    }
+
+    setUserData(payload)
+    await finalizeUser(payload)
     navigate('/perfil')
   }
 
