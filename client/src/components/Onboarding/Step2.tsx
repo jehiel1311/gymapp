@@ -45,34 +45,37 @@ export default function Step2() {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 p-4">
-      <div>
-        <label>Equipo/Limitaciones</label>
-        <input className="block w-full" {...register('equipo')} />
-      </div>
-      <div>
-        <label>Lesiones</label>
-        <textarea className="block w-full" {...register('lesiones')} />
-      </div>
-      <fieldset>
-        <legend>Medidas adicionales (cm)</legend>
-        <div className="flex gap-2">
-          <input placeholder="Brazo" type="number" {...register('medidas.brazoCm',{valueAsNumber:true})} className="w-20" />
-          <input placeholder="Cintura" type="number" {...register('medidas.cinturaCm',{valueAsNumber:true})} className="w-20" />
-          <input placeholder="Cadera" type="number" {...register('medidas.caderaCm',{valueAsNumber:true})} className="w-20" />
+    <div className="page-shell form-layout">
+      <form onSubmit={handleSubmit(onSubmit)} className="panel stack">
+        <h2 className="text-xl font-bold" style={{ margin: 0 }}>Últimos detalles</h2>
+        <div>
+          <label className="label">Equipo / Limitaciones</label>
+          <input {...register('equipo')} placeholder="Mancuernas, bandas, sin equipamiento..." />
         </div>
-      </fieldset>
-      <div>
-        <label className="flex items-center gap-2">
-          <input type="checkbox" {...register('notificaciones.pesoMensual')} />
-          Notificación peso mensual
-        </label>
-        <label className="flex items-center gap-2">
-          <input type="checkbox" {...register('notificaciones.diarioSesion')} />
-          Recordatorio diario de sesión
-        </label>
-      </div>
-      <button type="submit" className="bg-green-600 text-white px-4 py-2">Finalizar</button>
-    </form>
+        <div>
+          <label className="label">Lesiones</label>
+          <textarea {...register('lesiones')} placeholder="Si hay alguna lesión o molestia, describila" />
+        </div>
+        <fieldset className="panel" style={{ background: '#f8faff' }}>
+          <legend className="label">Medidas adicionales (cm)</legend>
+          <div className="row">
+            <input placeholder="Brazo" type="number" {...register('medidas.brazoCm', { valueAsNumber: true })} className="w-20" />
+            <input placeholder="Cintura" type="number" {...register('medidas.cinturaCm', { valueAsNumber: true })} className="w-20" />
+            <input placeholder="Cadera" type="number" {...register('medidas.caderaCm', { valueAsNumber: true })} className="w-20" />
+          </div>
+        </fieldset>
+        <div className="stack" style={{ gap: '0.5rem' }}>
+          <label className="flex items-center gap-2">
+            <input type="checkbox" {...register('notificaciones.pesoMensual')} style={{ width: 16 }} />
+            Notificación peso mensual
+          </label>
+          <label className="flex items-center gap-2">
+            <input type="checkbox" {...register('notificaciones.diarioSesion')} style={{ width: 16 }} />
+            Recordatorio diario de sesión
+          </label>
+        </div>
+        <button type="submit" className="bg-green-600 text-white px-4 py-2" style={{ alignSelf: 'flex-end' }}>Finalizar</button>
+      </form>
+    </div>
   )
 }
