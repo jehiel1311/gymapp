@@ -1,4 +1,8 @@
+import { useNavigate } from 'react-router-dom'
+
 function Landing() {
+  const navigate = useNavigate()
+
   return (
     <div
       style={{
@@ -16,6 +20,7 @@ function Landing() {
         Entrená como querés, donde querés.
       </p>
       <button
+        onClick={() => navigate('/step1')}
         style={{
           backgroundColor: '#800020',
           color: '#fff',
@@ -23,6 +28,7 @@ function Landing() {
           borderRadius: '4px',
           padding: '0.9rem 2rem',
           fontSize: '1.1rem',
+          cursor: 'pointer',
         }}
       >
         COMENZAR

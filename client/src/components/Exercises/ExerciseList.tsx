@@ -79,13 +79,7 @@ export default function ExerciseList() {
         {filtered.map(ex => (
           <div key={ex.ID} className="card" onClick={()=>setDetail(ex)} style={{padding:'1rem',cursor:'pointer'}}>
             <ImageWithFallback src={ex.Imagen} alt={ex["Nombre (ES)"]} />
-            <h3
-              dangerouslySetInnerHTML={{
-                __html: search
-                  ? ex["Nombre (ES)"].replace(new RegExp(`(${search})`, 'ig'), '<u>$1</u>')
-                  : ex["Nombre (ES)"]
-              }}
-            />
+            <h3>{highlightMatch(ex["Nombre (ES)"], search)}</h3>
             <p>{ex["Zona principal"]}</p>
           </div>
         ))}
@@ -131,4 +125,20 @@ function ImageWithFallback({src, alt}: ImgProps) {
       />
     </div>
   )
+}
+
+
+function highlightMatch(text: string, query: string) {
+  if (!query.trim()) return text
+
+  const normalizedQuery = query.trim().toLowerCase()
+  const parts = text.split(new RegExp(`(${escapeRegExp(normalizedQuery)})`, 'ig'))
+
+  return parts.map((part, index) =>
+    part.toLowerCase() === normalizedQuery ? <u key={`${part}-${index}`}>{part}</u> : part
+  )
+}
+
+function escapeRegExp(value: string) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 }

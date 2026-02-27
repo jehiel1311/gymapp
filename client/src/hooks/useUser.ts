@@ -1,12 +1,12 @@
-import React, { createContext, useContext, useState } from 'react'
-import type { ReactNode } from "react"
+import { createContext, createElement, useContext, useEffect, useState } from 'react'
+import type { ReactNode } from 'react'
 import type { User } from '../models/user'
 import { saveUser, loadUser } from '../services/api'
 
 interface UserContextValue {
   user: User | null
-  setUserData: (data: Partial<User>) => void
-  finalizeUser: () => Promise<void>
+  setUserData: (data: Partial<User>) => Partial<User>
+  finalizeUser: (data?: Partial<User>) => Promise<void>
 }
 
 const UserContext = createContext<UserContextValue | undefined>(undefined)
@@ -15,22 +15,24 @@ export function UserProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
 
   const setUserData = (data: Partial<User>) => {
-    setUser(prev => ({ ...(prev || ({} as User)), ...data } as User))
+    setUser((prev) => ({ ...(prev || ({} as User)), ...data } as User))
+    return data
   }
 
-  const finalizeUser = async () => {
-    if (user) {
-      const saved = await saveUser(user)
+  const finalizeUser = async (data?: Partial<User>) => {
+    const payload = data ? { ...(user || {}), ...data } : user
+
+    if (payload) {
+      const saved = await saveUser(payload)
       setUser(saved)
     }
   }
 
-  // load from localStorage on mount
-  useState(() => {
-    loadUser().then(u => u && setUser(u))
-  })
+  useEffect(() => {
+    loadUser().then((u) => u && setUser(u))
+  }, [])
 
-  return React.createElement(
+  return createElement(
     UserContext.Provider,
     { value: { user, setUserData, finalizeUser } },
     children
