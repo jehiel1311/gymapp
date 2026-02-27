@@ -4,35 +4,17 @@ function Landing() {
   const navigate = useNavigate()
 
   return (
-    <div
-      style={{
-        minHeight: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: '1rem',
-        textAlign: 'center',
-      }}
-    >
-      <h1 style={{ color: '#800020', fontSize: '2.5rem', margin: 0 }}>ENTRENAPP</h1>
-      <p style={{ color: '#555', margin: '0.75rem 0 2rem' }}>
-        Entrená como querés, donde querés.
-      </p>
-      <button
-        onClick={() => navigate('/step1')}
-        style={{
-          backgroundColor: '#800020',
-          color: '#fff',
-          border: 'none',
-          borderRadius: '4px',
-          padding: '0.9rem 2rem',
-          fontSize: '1.1rem',
-          cursor: 'pointer',
-        }}
-      >
-        COMENZAR
-      </button>
+    <div className="page-shell" style={{ minHeight: '100vh', display: 'grid', placeItems: 'center' }}>
+      <section className="panel" style={{ width: '100%', maxWidth: 720, textAlign: 'center', padding: '2.5rem 1.5rem' }}>
+        <p style={{ margin: 0, color: '#6d28d9', fontWeight: 700, letterSpacing: '0.08em' }}>ENTRENAPP</p>
+        <h1 style={{ margin: '0.4rem 0', fontSize: '2.5rem' }}>Tu entrenamiento, versión 2026</h1>
+        <p style={{ color: '#475569', margin: '0.75rem auto 2rem', maxWidth: 460 }}>
+          Planes personalizados, seguimiento inteligente y una experiencia mucho más limpia para mantener tu progreso siempre visible.
+        </p>
+        <button onClick={() => navigate('/step1')}>
+          Comenzar ahora
+        </button>
+      </section>
     </div>
   )
 }
