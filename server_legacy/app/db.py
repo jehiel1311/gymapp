@@ -1,9 +1,25 @@
 import pandas as pd
 from pathlib import Path
 
-BASE_DIR = Path(__file__).resolve().parent.parent
-EXCEL_PATH = BASE_DIR / 'Ejercicios-base.xlsx'
-IMG_DIR = BASE_DIR / 'img'
+SERVER_DIR = Path(__file__).resolve().parent.parent
+REPO_DIR = SERVER_DIR.parent
+
+
+def _first_existing_path(*paths: Path) -> Path:
+    for candidate in paths:
+        if candidate.exists():
+            return candidate
+    return paths[0]
+
+
+EXCEL_PATH = _first_existing_path(
+    REPO_DIR / 'Ejercicios-base.xlsx',
+    SERVER_DIR / 'Ejercicios-base.xlsx',
+)
+IMG_DIR = _first_existing_path(
+    REPO_DIR / 'img',
+    SERVER_DIR / 'img',
+)
 
 _df = None
 
@@ -23,4 +39,3 @@ def get_exercise_by_id(ex_id: str):
     if result.empty:
         return None
     return result.iloc[0].to_dict()
-
