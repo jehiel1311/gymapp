@@ -8,7 +8,7 @@ import ExerciseList from '../Exercises/ExerciseList'
 
 export default function OnboardingRouter() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={import.meta.env.BASE_URL}>
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/step1" element={<Step1 />} />

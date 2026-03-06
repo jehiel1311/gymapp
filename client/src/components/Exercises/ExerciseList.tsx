@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { TextField, Checkbox, FormControlLabel, FormGroup, Chip, Dialog, DialogTitle, DialogContent, DialogActions, Button, CircularProgress } from '@mui/material'
 import { styled } from '@mui/material/styles'
+import localExercises from '../../data/exercises.json'
 
 interface Exercise {
   ID: string
@@ -32,16 +33,30 @@ export default function ExerciseList() {
   const [error, setError] = useState('')
 
   useEffect(() => {
-    fetch('/exercises').then(r => {
-      if (!r.ok) throw new Error('error')
-      return r.json()
-    }).then((data: Exercise[]) => {
-      setExercises(data)
-      setFiltered(data)
-      setZones(Array.from(new Set(data.map(d => d['Zona principal'])) as Set<string>))
-      setDifficulties(Array.from(new Set(data.map(d => d['Nivel de dificultad']).filter(Boolean)) as Set<string>))
-    }).catch(() => setError('Error al cargar datos')).finally(() => setLoading(false))
+    const API_BASE = import.meta.env.VITE_API_BASE_URL || ''
+    const url = `${API_BASE}/exercises`
+
+    fetch(url)
+      .then(r => {
+        if (!r.ok) throw new Error('error')
+        return r.json()
+      })
+      .then((data: Exercise[]) => {
+        hydrateExerciseState(data)
+      })
+      .catch(() => {
+        hydrateExerciseState(localExercises as Exercise[])
+        setError('No pudimos conectar con el servidor. Mostrando ejercicios locales.')
+      })
+      .finally(() => setLoading(false))
   }, [])
+
+  function hydrateExerciseState(data: Exercise[]) {
+    setExercises(data)
+    setFiltered(data)
+    setZones(Array.from(new Set(data.map(d => d['Zona principal'])) as Set<string>))
+    setDifficulties(Array.from(new Set(data.map(d => d['Nivel de dificultad']).filter(Boolean)) as Set<string>))
+  }
 
   useEffect(() => {
     let list = exercises
@@ -52,10 +67,10 @@ export default function ExerciseList() {
   }, [search, selectedZones, selectedDiffs, exercises])
 
   if (loading) return <p>Cargando...</p>
-  if (error) return <div>{error} <Button onClick={() => window.location.reload()}>Reintentar</Button></div>
 
   return (
     <div className="page-shell">
+      {error && <div style={{ marginBottom: '1rem', color: '#b45309' }}>{error}</div>}
       <section className="panel">
         <TextField label="Buscar" variant="outlined" fullWidth value={search} onChange={e => setSearch(e.target.value)} sx={{ mb: 2 }} />
         <FormGroup row>
