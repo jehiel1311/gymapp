@@ -8,9 +8,9 @@ const step2Schema = z.object({
   equipo: z.string().optional(),
   lesiones: z.string().optional(),
   medidas: z.object({
-    brazoCm: z.number().optional(),
-    cinturaCm: z.number().optional(),
-    caderaCm: z.number().optional()
+    brazoCm: z.number().finite().optional(),
+    cinturaCm: z.number().finite().optional(),
+    caderaCm: z.number().finite().optional()
   }).optional(),
   notificaciones: z.object({
     pesoMensual: z.boolean().optional(),
@@ -23,7 +23,7 @@ type Step2Data = z.infer<typeof step2Schema>
 export default function Step2() {
   const { register, handleSubmit } = useForm<Step2Data>({
     resolver: zodResolver(step2Schema),
-    mode: 'onChange'
+    mode: 'onChange',
   })
   const navigate = useNavigate()
   const { setUserData, finalizeUser } = useUser()
@@ -59,9 +59,9 @@ export default function Step2() {
         <fieldset className="panel" style={{ background: '#f8faff' }}>
           <legend className="label">Medidas adicionales (cm)</legend>
           <div className="row">
-            <input placeholder="Brazo" type="number" {...register('medidas.brazoCm', { valueAsNumber: true })} className="w-20" />
-            <input placeholder="Cintura" type="number" {...register('medidas.cinturaCm', { valueAsNumber: true })} className="w-20" />
-            <input placeholder="Cadera" type="number" {...register('medidas.caderaCm', { valueAsNumber: true })} className="w-20" />
+            <input placeholder="Brazo" type="number" {...register('medidas.brazoCm', { setValueAs: (v) => v === '' ? undefined : Number(v) })} className="w-20" />
+            <input placeholder="Cintura" type="number" {...register('medidas.cinturaCm', { setValueAs: (v) => v === '' ? undefined : Number(v) })} className="w-20" />
+            <input placeholder="Cadera" type="number" {...register('medidas.caderaCm', { setValueAs: (v) => v === '' ? undefined : Number(v) })} className="w-20" />
           </div>
         </fieldset>
         <div className="stack" style={{ gap: '0.5rem' }}>

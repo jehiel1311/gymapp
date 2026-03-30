@@ -8,7 +8,11 @@ const step1Schema = z.object({
   nombre: z.string().min(1, 'Requerido'),
   email: z.string().email('Email inválido'),
   password: z.string().min(6, 'Mínimo 6 caracteres'),
-  fechaNacimiento: z.string(),
+  fechaNacimiento: z
+    .string()
+    .min(1, 'Requerido')
+    .refine((value) => !Number.isNaN(new Date(value).getTime()), 'Fecha inválida')
+    .refine((value) => new Date(value).getTime() <= Date.now(), 'La fecha no puede ser futura'),
   alturaCm: z.number({ invalid_type_error: 'Número' }).min(30).max(300),
   pesoKg: z.number({ invalid_type_error: 'Número' }).min(20).max(500),
   nivel: z.enum(['Principiante', 'Intermedio', 'Avanzado']),
@@ -22,7 +26,11 @@ type Step1Data = z.infer<typeof step1Schema>
 export default function Step1() {
   const { register, handleSubmit, formState: { errors, isValid } } = useForm<Step1Data>({
     resolver: zodResolver(step1Schema),
-    mode: 'onChange'
+    mode: 'onChange',
+    defaultValues: {
+      diasDisponibles: [],
+      fechaNacimiento: '',
+    },
   })
   const navigate = useNavigate()
   const { setUserData } = useUser()
@@ -42,31 +50,32 @@ export default function Step1() {
       <div>
         <label className="label">Nombre</label>
         <input {...register('nombre')} />
-        {errors.nombre && <span className="text-red-500">{errors.nombre.message}</span>}
+        {errors.nombre && <span className="error-text">{errors.nombre.message}</span>}
       </div>
       <div>
         <label className="label">Email</label>
         <input type="email" {...register('email')} />
-        {errors.email && <span className="text-red-500">{errors.email.message}</span>}
+        {errors.email && <span className="error-text">{errors.email.message}</span>}
       </div>
       <div>
         <label className="label">Contraseña</label>
         <input type="password" {...register('password')} />
-        {errors.password && <span className="text-red-500">{errors.password.message}</span>}
+        {errors.password && <span className="error-text">{errors.password.message}</span>}
       </div>
       <div>
         <label className="label">Fecha de nacimiento</label>
         <input type="date" {...register('fechaNacimiento')} />
+        {errors.fechaNacimiento && <span className="error-text">{errors.fechaNacimiento.message}</span>}
       </div>
       <div>
         <label className="label">Altura (cm)</label>
         <input type="number" {...register('alturaCm',{valueAsNumber:true})} />
-        {errors.alturaCm && <span className="text-red-500">{errors.alturaCm.message}</span>}
+        {errors.alturaCm && <span className="error-text">{errors.alturaCm.message}</span>}
       </div>
       <div>
         <label className="label">Peso (kg)</label>
         <input type="number" {...register('pesoKg',{valueAsNumber:true})} />
-        {errors.pesoKg && <span className="text-red-500">{errors.pesoKg.message}</span>}
+        {errors.pesoKg && <span className="error-text">{errors.pesoKg.message}</span>}
       </div>
       <div>
         <label className="label">Nivel</label>
@@ -105,7 +114,7 @@ export default function Step1() {
             </label>
           ))}
         </div>
-        {errors.diasDisponibles && <span className="text-red-500">Seleccione al menos uno</span>}
+        {errors.diasDisponibles && <span className="error-text">Seleccione al menos uno</span>}
       </div>
       <button type="submit" disabled={!isValid} className="bg-blue-500 text-white px-4 py-2" style={{ alignSelf: 'flex-end' }}>
         Siguiente

@@ -7,7 +7,10 @@ export default function ProfilePage() {
 
   if (!user) return <p className="page-shell">No hay datos de usuario.</p>
 
-  const edad = Math.floor((Date.now() - new Date(user.fechaNacimiento).getTime()) / (1000 * 60 * 60 * 24 * 365.25))
+  const birthDate = new Date(user.fechaNacimiento)
+  const edad = Number.isNaN(birthDate.getTime())
+    ? '-'
+    : Math.floor((Date.now() - birthDate.getTime()) / (1000 * 60 * 60 * 24 * 365.25))
   const imc = (user.pesoKg / ((user.alturaCm / 100) ** 2)).toFixed(1)
 
   return (
