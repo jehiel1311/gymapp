@@ -2,6 +2,7 @@ import { FormEvent, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ACTIVITY_LABELS, type ActivityEntry, type ActivityType } from '../../models/activity'
 import { loadActivities, saveActivities } from '../../services/activity'
+import exercisesCatalog from '../../data/exercises.json'
 
 interface WeeklyGoal {
   sessions: number
@@ -14,6 +15,13 @@ const WEEKLY_GOAL: WeeklyGoal = {
 }
 
 const todayISO = new Date().toISOString().slice(0, 10)
+const ACTIVITY_TYPES_WITH_EXERCISES: ActivityType[] = ['weights']
+
+interface CatalogExercise {
+  ID: string
+  'Nombre (ES)': string
+  'Zona principal': string
+}
 
 function startOfWeek(date: Date): Date {
   const copy = new Date(date)
@@ -49,6 +57,8 @@ export default function CalendarPage() {
   const [durationMinutes, setDurationMinutes] = useState(30)
   const [distanceKm, setDistanceKm] = useState('')
   const [exercises, setExercises] = useState('')
+  const [selectedMuscle, setSelectedMuscle] = useState('')
+  const [selectedExercise, setSelectedExercise] = useState('')
   const [notes, setNotes] = useState('')
 
   const sortedEntries = useMemo(
@@ -82,6 +92,41 @@ export default function CalendarPage() {
     weeklySummary.sessions >= WEEKLY_GOAL.sessions && weeklySummary.totalMinutes >= WEEKLY_GOAL.minutes
       ? 'Vas excelente esta semana: cumpliste tus metas 💪'
       : 'Vas avanzando. Intenta sumar más sesiones o minutos para cumplir la meta semanal.'
+
+  const showExerciseSelectors = ACTIVITY_TYPES_WITH_EXERCISES.includes(type)
+
+  const muscleOptions = useMemo(() => {
+    if (!showExerciseSelectors) return []
+    const muscles = new Set<string>()
+    ;(exercisesCatalog as CatalogExercise[]).forEach((exercise) => muscles.add(exercise['Zona principal']))
+    return Array.from(muscles).sort((a, b) => a.localeCompare(b, 'es'))
+  }, [showExerciseSelectors])
+
+  const exerciseOptions = useMemo(() => {
+    if (!showExerciseSelectors || !selectedMuscle) return []
+    return (exercisesCatalog as CatalogExercise[])
+      .filter((exercise) => exercise['Zona principal'] === selectedMuscle)
+      .map((exercise) => exercise['Nombre (ES)'])
+      .sort((a, b) => a.localeCompare(b, 'es'))
+  }, [selectedMuscle, showExerciseSelectors])
+
+  const handleTypeChange = (newType: ActivityType) => {
+    setType(newType)
+    setSelectedMuscle('')
+    setSelectedExercise('')
+  }
+
+  const handleAddExercise = () => {
+    if (!selectedExercise) return
+    const currentExercises = exercises
+      .split(',')
+      .map((item) => item.trim())
+      .filter(Boolean)
+
+    if (currentExercises.includes(selectedExercise)) return
+
+    setExercises(currentExercises.length > 0 ? `${currentExercises.join(', ')}, ${selectedExercise}` : selectedExercise)
+  }
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -129,7 +174,7 @@ export default function CalendarPage() {
 
           <label>
             <span className="label">Tipo</span>
-            <select value={type} onChange={(e) => setType(e.target.value as ActivityType)}>
+            <select value={type} onChange={(e) => handleTypeChange(e.target.value as ActivityType)}>
               {Object.entries(ACTIVITY_LABELS).map(([value, label]) => (
                 <option key={value} value={value}>{label}</option>
               ))}
@@ -160,6 +205,34 @@ export default function CalendarPage() {
             />
           </label>
 
+          {showExerciseSelectors && (
+            <>
+              <label>
+                <span className="label">Músculo / zona principal</span>
+                <select value={selectedMuscle} onChange={(e) => setSelectedMuscle(e.target.value)}>
+                  <option value="">Seleccionar zona</option>
+                  {muscleOptions.map((muscle) => (
+                    <option key={muscle} value={muscle}>{muscle}</option>
+                  ))}
+                </select>
+              </label>
+
+              <label>
+                <span className="label">Ejercicio</span>
+                <select
+                  value={selectedExercise}
+                  onChange={(e) => setSelectedExercise(e.target.value)}
+                  disabled={!selectedMuscle}
+                >
+                  <option value="">{selectedMuscle ? 'Seleccionar ejercicio' : 'Elegí un músculo primero'}</option>
+                  {exerciseOptions.map((exerciseName) => (
+                    <option key={exerciseName} value={exerciseName}>{exerciseName}</option>
+                  ))}
+                </select>
+              </label>
+            </>
+          )}
+
           <label style={{ gridColumn: '1 / -1' }}>
             <span className="label">Ejercicios realizados (opcional)</span>
             <input
@@ -180,6 +253,11 @@ export default function CalendarPage() {
           </label>
 
           <div>
+            {showExerciseSelectors && (
+              <button type="button" onClick={handleAddExercise} disabled={!selectedExercise} style={{ marginBottom: '0.5rem' }}>
+                Agregar ejercicio seleccionado
+              </button>
+            )}
             <button type="submit" className="bg-green-600">Guardar actividad</button>
           </div>
         </form>
