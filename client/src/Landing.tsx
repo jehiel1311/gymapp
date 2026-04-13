@@ -1,7 +1,18 @@
 import { useNavigate } from 'react-router-dom'
+import { useUser } from './hooks/useUser'
 
 function Landing() {
   const navigate = useNavigate()
+  const { isAuthenticated, user } = useUser()
+
+  const handleStart = () => {
+    if (!isAuthenticated) {
+      navigate('/auth')
+      return
+    }
+
+    navigate(user ? '/perfil' : '/step1')
+  }
 
   return (
     <div className="page-shell" style={{ minHeight: '100vh', display: 'grid', placeItems: 'center' }}>
@@ -11,8 +22,8 @@ function Landing() {
         <p style={{ color: '#475569', margin: '0.75rem auto 2rem', maxWidth: 460 }}>
           Planes personalizados, seguimiento inteligente y una experiencia mucho más limpia para mantener tu progreso siempre visible.
         </p>
-        <button onClick={() => navigate('/step1')}>
-          Comenzar ahora
+        <button onClick={handleStart}>
+          {isAuthenticated ? 'Ir a mi cuenta' : 'Comenzar ahora'}
         </button>
       </section>
     </div>

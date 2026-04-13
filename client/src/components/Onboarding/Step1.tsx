@@ -24,16 +24,24 @@ const step1Schema = z.object({
 type Step1Data = z.infer<typeof step1Schema>
 
 export default function Step1() {
+  const { user, setUserData } = useUser()
   const { register, handleSubmit, formState: { errors, isValid } } = useForm<Step1Data>({
     resolver: zodResolver(step1Schema),
     mode: 'onChange',
     defaultValues: {
-      diasDisponibles: [],
-      fechaNacimiento: '',
+      nombre: user?.nombre || '',
+      email: user?.email || '',
+      password: user?.password || '',
+      fechaNacimiento: user?.fechaNacimiento || '',
+      alturaCm: user?.alturaCm,
+      pesoKg: user?.pesoKg,
+      nivel: user?.nivel || 'Principiante',
+      actividad: user?.actividad || 'Sedentaria',
+      objetivo: user?.objetivo || 'Masa',
+      diasDisponibles: user?.diasDisponibles || [],
     },
   })
   const navigate = useNavigate()
-  const { setUserData } = useUser()
 
   const onSubmit = (data: Step1Data) => {
     setUserData(data)
