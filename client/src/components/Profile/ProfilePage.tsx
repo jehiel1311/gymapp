@@ -3,7 +3,7 @@ import { useUser } from '../../hooks/useUser'
 
 export default function ProfilePage() {
   const navigate = useNavigate()
-  const { user } = useUser()
+  const { user, logout } = useUser()
 
   if (!user) return <p className="page-shell">No hay datos de usuario.</p>
 
@@ -28,6 +28,7 @@ export default function ProfilePage() {
         <div className="row" style={{ marginTop: '1rem' }}>
           <button onClick={() => navigate('/calendario')} className="bg-gray-500 text-white px-4 py-2">Registro de actividad</button>
           <button onClick={() => navigate('/ejercicios')} className="bg-blue-600 text-white px-4 py-2">Ver Ejercicios</button>
+          <button onClick={() => { logout(); navigate('/auth') }} className="bg-gray-500 text-white px-4 py-2">Cerrar sesión</button>
         </div>
       </section>
 
