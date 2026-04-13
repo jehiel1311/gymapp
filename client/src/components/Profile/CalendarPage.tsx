@@ -73,6 +73,7 @@ export default function CalendarPage() {
   const [selectedMuscle, setSelectedMuscle] = useState('')
   const [selectedExercise, setSelectedExercise] = useState('')
   const [notes, setNotes] = useState('')
+  const [formError, setFormError] = useState('')
 
   const sortedEntries = useMemo(
     () => [...entries].sort((a, b) => b.date.localeCompare(a.date)),
@@ -129,6 +130,7 @@ export default function CalendarPage() {
     setSelectedExercise('')
     setSelectedExercises([])
     setExerciseDetails({})
+    setFormError('')
   }
 
   const handleAddExercise = () => {
@@ -140,6 +142,7 @@ export default function CalendarPage() {
       [selectedExercise]: DEFAULT_SETS.map((set) => ({ ...set }))
     }))
     setSelectedExercise('')
+    setFormError('')
   }
 
   const handleSetChange = (
@@ -189,6 +192,12 @@ export default function CalendarPage() {
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
+    setFormError('')
+
+    if (showExerciseSelectors && selectedExercises.length === 0) {
+      setFormError('Para actividades de pesas, agregá al menos un ejercicio realizado.')
+      return
+    }
 
     const normalizedDistance = distanceKm.trim() ? Number(distanceKm) : undefined
 
@@ -215,6 +224,7 @@ export default function CalendarPage() {
     setSelectedExercises([])
     setExerciseDetails({})
     setNotes('')
+    setFormError('')
   }
 
   return (
@@ -298,10 +308,10 @@ export default function CalendarPage() {
 
           {showExerciseSelectors && (
             <label style={{ gridColumn: '1 / -1' }}>
-              <span className="label">Ejercicios seleccionados</span>
+              <span className="label">Ejercicios realizados</span>
               {selectedExercises.length === 0 ? (
                 <p style={{ margin: '0.35rem 0 0 0', color: '#64748b' }}>
-                  Todavía no agregaste ejercicios para esta sesión.
+                  Agregá ejercicios para cargar series y peso (arranca con 3 series por ejercicio).
                 </p>
               ) : (
                 <p style={{ margin: '0.35rem 0 0 0' }}>{selectedExercises.join(', ')}</p>
@@ -366,6 +376,11 @@ export default function CalendarPage() {
               <button type="button" onClick={handleAddExercise} disabled={!selectedExercise} style={{ marginBottom: '0.5rem' }}>
                 Agregar ejercicio seleccionado
               </button>
+            )}
+            {formError && (
+              <p style={{ margin: '0 0 0.5rem 0', color: '#b91c1c', fontWeight: 600 }}>
+                {formError}
+              </p>
             )}
             <button type="submit" className="bg-green-600">Guardar actividad</button>
           </div>
