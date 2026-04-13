@@ -73,6 +73,7 @@ export default function CalendarPage() {
   const [selectedMuscle, setSelectedMuscle] = useState('')
   const [selectedExercise, setSelectedExercise] = useState('')
   const [notes, setNotes] = useState('')
+  const [routineSummary, setRoutineSummary] = useState('')
   const [formError, setFormError] = useState('')
 
   const sortedEntries = useMemo(
@@ -130,6 +131,7 @@ export default function CalendarPage() {
     setSelectedExercise('')
     setSelectedExercises([])
     setExerciseDetails({})
+    setRoutineSummary('')
     setFormError('')
   }
 
@@ -143,6 +145,15 @@ export default function CalendarPage() {
     }))
     setSelectedExercise('')
     setFormError('')
+  }
+
+  const handleRemoveExercise = (exerciseName: string) => {
+    setSelectedExercises((prev) => prev.filter((name) => name !== exerciseName))
+    setExerciseDetails((prev) => {
+      const updated = { ...prev }
+      delete updated[exerciseName]
+      return updated
+    })
   }
 
   const handleSetChange = (
@@ -203,6 +214,10 @@ export default function CalendarPage() {
 
     const savedExerciseDetails = buildExerciseDetails()
 
+    const combinedNotes = [notes.trim(), showExerciseSelectors ? routineSummary.trim() : '']
+      .filter(Boolean)
+      .join('\n')
+
     const newEntry: ActivityEntry = {
       id: crypto.randomUUID(),
       date,
@@ -211,7 +226,7 @@ export default function CalendarPage() {
       distanceKm: Number.isFinite(normalizedDistance) ? normalizedDistance : undefined,
       exerciseDetails: savedExerciseDetails,
       exercises: showExerciseSelectors && selectedExercises.length > 0 ? selectedExercises.join(', ') : undefined,
-      notes: notes.trim() || undefined,
+      notes: combinedNotes || undefined,
       createdAt: new Date().toISOString()
     }
 
@@ -224,6 +239,7 @@ export default function CalendarPage() {
     setSelectedExercises([])
     setExerciseDetails({})
     setNotes('')
+    setRoutineSummary('')
     setFormError('')
   }
 
@@ -292,16 +308,21 @@ export default function CalendarPage() {
 
               <label>
                 <span className="label">Ejercicio</span>
-                <select
-                  value={selectedExercise}
-                  onChange={(e) => setSelectedExercise(e.target.value)}
-                  disabled={!selectedMuscle}
-                >
-                  <option value="">{selectedMuscle ? 'Seleccionar ejercicio' : 'Elegí un músculo primero'}</option>
-                  {exerciseOptions.map((exerciseName) => (
-                    <option key={exerciseName} value={exerciseName}>{exerciseName}</option>
-                  ))}
-                </select>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: '0.5rem' }}>
+                  <select
+                    value={selectedExercise}
+                    onChange={(e) => setSelectedExercise(e.target.value)}
+                    disabled={!selectedMuscle}
+                  >
+                    <option value="">{selectedMuscle ? 'Seleccionar ejercicio' : 'Elegí un músculo primero'}</option>
+                    {exerciseOptions.map((exerciseName) => (
+                      <option key={exerciseName} value={exerciseName}>{exerciseName}</option>
+                    ))}
+                  </select>
+                  <button type="button" onClick={handleAddExercise} disabled={!selectedExercise}>
+                    + Agregar
+                  </button>
+                </div>
               </label>
             </>
           )}
@@ -314,7 +335,19 @@ export default function CalendarPage() {
                   Agregá ejercicios para cargar series y peso (arranca con 3 series por ejercicio).
                 </p>
               ) : (
-                <p style={{ margin: '0.35rem 0 0 0' }}>{selectedExercises.join(', ')}</p>
+                <div style={{ marginTop: '0.5rem', display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+                  {selectedExercises.map((exerciseName) => (
+                    <button
+                      key={exerciseName}
+                      type="button"
+                      onClick={() => handleRemoveExercise(exerciseName)}
+                      style={{ fontSize: '0.85rem' }}
+                      title="Quitar ejercicio"
+                    >
+                      {exerciseName} ✕
+                    </button>
+                  ))}
+                </div>
               )}
             </label>
           )}
@@ -363,6 +396,19 @@ export default function CalendarPage() {
           )}
 
           <label style={{ gridColumn: '1 / -1' }}>
+            {showExerciseSelectors && (
+              <>
+                <span className="label">Detalle completo de la rutina (opcional)</span>
+                <textarea
+                  placeholder="Ej: Superserie pecho/hombro, descansos de 90s, técnica usada, etc."
+                  value={routineSummary}
+                  onChange={(e) => setRoutineSummary(e.target.value)}
+                />
+              </>
+            )}
+          </label>
+
+          <label style={{ gridColumn: '1 / -1' }}>
             <span className="label">Notas (opcional)</span>
             <textarea
               placeholder="Cómo te sentiste, cargas usadas, etc."
@@ -372,11 +418,6 @@ export default function CalendarPage() {
           </label>
 
           <div>
-            {showExerciseSelectors && (
-              <button type="button" onClick={handleAddExercise} disabled={!selectedExercise} style={{ marginBottom: '0.5rem' }}>
-                Agregar ejercicio seleccionado
-              </button>
-            )}
             {formError && (
               <p style={{ margin: '0 0 0.5rem 0', color: '#b91c1c', fontWeight: 600 }}>
                 {formError}
