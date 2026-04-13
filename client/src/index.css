@@ -152,6 +152,31 @@ textarea:focus {
   transform: translateY(-3px);
 }
 
+.set-card {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 0.75rem;
+  background: var(--surface-soft);
+}
+
+.set-grid {
+  display: grid;
+  grid-template-columns: 56px 1fr 1fr;
+  gap: 0.5rem;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.set-row {
+  display: contents;
+}
+
+.set-header {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
 .text-xl { font-size: 1.25rem; }
 .font-bold { font-weight: 700; }
 .p-4 { padding: 1rem; }

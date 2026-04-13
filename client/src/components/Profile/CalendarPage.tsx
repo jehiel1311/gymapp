@@ -1,6 +1,12 @@
 import { FormEvent, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ACTIVITY_LABELS, type ActivityEntry, type ActivityType } from '../../models/activity'
+import {
+  ACTIVITY_LABELS,
+  type ActivityEntry,
+  type ActivityType,
+  type ExerciseSet,
+  type LoggedExercise
+} from '../../models/activity'
 import { loadActivities, saveActivities } from '../../services/activity'
 import exercisesCatalog from '../../data/exercises.json'
 
@@ -22,6 +28,12 @@ interface CatalogExercise {
   'Nombre (ES)': string
   'Zona principal': string
 }
+
+const DEFAULT_SETS: ExerciseSet[] = [
+  { reps: '', weightKg: '' },
+  { reps: '', weightKg: '' },
+  { reps: '', weightKg: '' }
+]
 
 function startOfWeek(date: Date): Date {
   const copy = new Date(date)
@@ -57,6 +69,7 @@ export default function CalendarPage() {
   const [durationMinutes, setDurationMinutes] = useState(30)
   const [distanceKm, setDistanceKm] = useState('')
   const [selectedExercises, setSelectedExercises] = useState<string[]>([])
+  const [exerciseDetails, setExerciseDetails] = useState<Record<string, ExerciseSet[]>>({})
   const [selectedMuscle, setSelectedMuscle] = useState('')
   const [selectedExercise, setSelectedExercise] = useState('')
   const [notes, setNotes] = useState('')
@@ -115,13 +128,63 @@ export default function CalendarPage() {
     setSelectedMuscle('')
     setSelectedExercise('')
     setSelectedExercises([])
+    setExerciseDetails({})
   }
 
   const handleAddExercise = () => {
     if (!selectedExercise) return
     if (selectedExercises.includes(selectedExercise)) return
     setSelectedExercises((prev) => [...prev, selectedExercise])
+    setExerciseDetails((prev) => ({
+      ...prev,
+      [selectedExercise]: DEFAULT_SETS.map((set) => ({ ...set }))
+    }))
     setSelectedExercise('')
+  }
+
+  const handleSetChange = (
+    exerciseName: string,
+    setIndex: number,
+    field: keyof ExerciseSet,
+    value: string
+  ) => {
+    setExerciseDetails((prev) => {
+      const exerciseSets = prev[exerciseName] ?? DEFAULT_SETS.map((set) => ({ ...set }))
+      const updatedSets = exerciseSets.map((set, index) =>
+        index === setIndex ? { ...set, [field]: value } : set
+      )
+      return {
+        ...prev,
+        [exerciseName]: updatedSets
+      }
+    })
+  }
+
+  const handleAddSet = (exerciseName: string) => {
+    setExerciseDetails((prev) => {
+      const exerciseSets = prev[exerciseName] ?? DEFAULT_SETS.map((set) => ({ ...set }))
+      return {
+        ...prev,
+        [exerciseName]: [...exerciseSets, { reps: '', weightKg: '' }]
+      }
+    })
+  }
+
+  const buildExerciseDetails = (): LoggedExercise[] | undefined => {
+    if (!showExerciseSelectors || selectedExercises.length === 0) return undefined
+
+    const details = selectedExercises.map((exerciseName) => {
+      const sets = (exerciseDetails[exerciseName] ?? DEFAULT_SETS)
+        .map((set) => ({ reps: set.reps.trim(), weightKg: set.weightKg.trim() }))
+        .filter((set) => set.reps || set.weightKg)
+
+      return {
+        name: exerciseName,
+        sets
+      }
+    })
+
+    return details
   }
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
@@ -129,12 +192,15 @@ export default function CalendarPage() {
 
     const normalizedDistance = distanceKm.trim() ? Number(distanceKm) : undefined
 
+    const savedExerciseDetails = buildExerciseDetails()
+
     const newEntry: ActivityEntry = {
       id: crypto.randomUUID(),
       date,
       type,
       durationMinutes,
       distanceKm: Number.isFinite(normalizedDistance) ? normalizedDistance : undefined,
+      exerciseDetails: savedExerciseDetails,
       exercises: showExerciseSelectors && selectedExercises.length > 0 ? selectedExercises.join(', ') : undefined,
       notes: notes.trim() || undefined,
       createdAt: new Date().toISOString()
@@ -147,6 +213,7 @@ export default function CalendarPage() {
     setDurationMinutes(30)
     setDistanceKm('')
     setSelectedExercises([])
+    setExerciseDetails({})
     setNotes('')
   }
 
@@ -242,6 +309,49 @@ export default function CalendarPage() {
             </label>
           )}
 
+          {showExerciseSelectors && selectedExercises.length > 0 && (
+            <div style={{ gridColumn: '1 / -1' }} className="stack">
+              {selectedExercises.map((exerciseName) => {
+                const sets = exerciseDetails[exerciseName] ?? DEFAULT_SETS
+                return (
+                  <article key={exerciseName} className="set-card">
+                    <p style={{ margin: '0 0 0.5rem 0', fontWeight: 600 }}>{exerciseName}</p>
+                    <div className="set-grid">
+                      <span className="set-header">Serie</span>
+                      <span className="set-header">Reps</span>
+                      <span className="set-header">Peso (kg)</span>
+
+                      {sets.map((set, setIndex) => (
+                        <div className="set-row" key={`${exerciseName}-${setIndex}`}>
+                          <span>{setIndex + 1}</span>
+                          <input
+                            type="number"
+                            min={0}
+                            step={1}
+                            placeholder="10"
+                            value={set.reps}
+                            onChange={(e) => handleSetChange(exerciseName, setIndex, 'reps', e.target.value)}
+                          />
+                          <input
+                            type="number"
+                            min={0}
+                            step={0.5}
+                            placeholder="20"
+                            value={set.weightKg}
+                            onChange={(e) => handleSetChange(exerciseName, setIndex, 'weightKg', e.target.value)}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                    <button type="button" onClick={() => handleAddSet(exerciseName)}>
+                      + Agregar serie
+                    </button>
+                  </article>
+                )
+              })}
+            </div>
+          )}
+
           <label style={{ gridColumn: '1 / -1' }}>
             <span className="label">Notas (opcional)</span>
             <textarea
@@ -303,6 +413,31 @@ export default function CalendarPage() {
                   {entry.distanceKm ? ` · Distancia: ${entry.distanceKm} km` : ''}
                 </p>
                 {entry.exercises && <p style={{ margin: '0.35rem 0 0 0' }}><strong>Ejercicios:</strong> {entry.exercises}</p>}
+                {entry.exerciseDetails && entry.exerciseDetails.length > 0 && (
+                  <details style={{ marginTop: '0.5rem' }}>
+                    <summary style={{ cursor: 'pointer', fontWeight: 600 }}>Ver detalle de series y pesos</summary>
+                    <div className="stack" style={{ marginTop: '0.5rem' }}>
+                      {entry.exerciseDetails.map((exercise) => (
+                        <div key={exercise.name}>
+                          <strong>{exercise.name}</strong>
+                          {exercise.sets.length === 0 ? (
+                            <p style={{ margin: '0.25rem 0 0 0', color: '#64748b' }}>
+                              Sin series cargadas.
+                            </p>
+                          ) : (
+                            <ul style={{ margin: '0.35rem 0 0 1rem', padding: 0 }}>
+                              {exercise.sets.map((set, index) => (
+                                <li key={`${exercise.name}-set-${index}`}>
+                                  Serie {index + 1}: {set.reps || '-'} reps · {set.weightKg || '-'} kg
+                                </li>
+                              ))}
+                            </ul>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </details>
+                )}
                 {entry.notes && <p style={{ margin: '0.35rem 0 0 0' }}><strong>Notas:</strong> {entry.notes}</p>}
               </article>
             ))}
