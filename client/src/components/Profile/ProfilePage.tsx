@@ -26,7 +26,7 @@ export default function ProfilePage() {
           <p><strong>IMC:</strong> {imc}</p>
         </div>
         <div className="row" style={{ marginTop: '1rem' }}>
-          <button onClick={() => navigate('/calendario')} className="bg-gray-500 text-white px-4 py-2">Ir a Calendario</button>
+          <button onClick={() => navigate('/calendario')} className="bg-gray-500 text-white px-4 py-2">Registro de actividad</button>
           <button onClick={() => navigate('/ejercicios')} className="bg-blue-600 text-white px-4 py-2">Ver Ejercicios</button>
         </div>
       </section>
