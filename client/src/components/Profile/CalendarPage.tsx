@@ -56,7 +56,7 @@ export default function CalendarPage() {
   const [type, setType] = useState<ActivityType>('running')
   const [durationMinutes, setDurationMinutes] = useState(30)
   const [distanceKm, setDistanceKm] = useState('')
-  const [exercises, setExercises] = useState('')
+  const [selectedExercises, setSelectedExercises] = useState<string[]>([])
   const [selectedMuscle, setSelectedMuscle] = useState('')
   const [selectedExercise, setSelectedExercise] = useState('')
   const [notes, setNotes] = useState('')
@@ -114,18 +114,14 @@ export default function CalendarPage() {
     setType(newType)
     setSelectedMuscle('')
     setSelectedExercise('')
+    setSelectedExercises([])
   }
 
   const handleAddExercise = () => {
     if (!selectedExercise) return
-    const currentExercises = exercises
-      .split(',')
-      .map((item) => item.trim())
-      .filter(Boolean)
-
-    if (currentExercises.includes(selectedExercise)) return
-
-    setExercises(currentExercises.length > 0 ? `${currentExercises.join(', ')}, ${selectedExercise}` : selectedExercise)
+    if (selectedExercises.includes(selectedExercise)) return
+    setSelectedExercises((prev) => [...prev, selectedExercise])
+    setSelectedExercise('')
   }
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
@@ -139,7 +135,7 @@ export default function CalendarPage() {
       type,
       durationMinutes,
       distanceKm: Number.isFinite(normalizedDistance) ? normalizedDistance : undefined,
-      exercises: exercises.trim() || undefined,
+      exercises: showExerciseSelectors && selectedExercises.length > 0 ? selectedExercises.join(', ') : undefined,
       notes: notes.trim() || undefined,
       createdAt: new Date().toISOString()
     }
@@ -150,7 +146,7 @@ export default function CalendarPage() {
 
     setDurationMinutes(30)
     setDistanceKm('')
-    setExercises('')
+    setSelectedExercises([])
     setNotes('')
   }
 
@@ -233,15 +229,18 @@ export default function CalendarPage() {
             </>
           )}
 
-          <label style={{ gridColumn: '1 / -1' }}>
-            <span className="label">Ejercicios realizados (opcional)</span>
-            <input
-              type="text"
-              placeholder="Ej: sentadilla 4x10, press banca 3x8"
-              value={exercises}
-              onChange={(e) => setExercises(e.target.value)}
-            />
-          </label>
+          {showExerciseSelectors && (
+            <label style={{ gridColumn: '1 / -1' }}>
+              <span className="label">Ejercicios seleccionados</span>
+              {selectedExercises.length === 0 ? (
+                <p style={{ margin: '0.35rem 0 0 0', color: '#64748b' }}>
+                  Todavía no agregaste ejercicios para esta sesión.
+                </p>
+              ) : (
+                <p style={{ margin: '0.35rem 0 0 0' }}>{selectedExercises.join(', ')}</p>
+              )}
+            </label>
+          )}
 
           <label style={{ gridColumn: '1 / -1' }}>
             <span className="label">Notas (opcional)</span>
