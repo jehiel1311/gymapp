@@ -23,7 +23,7 @@ function Landing() {
           Planes personalizados, seguimiento inteligente y una experiencia mucho más limpia para mantener tu progreso siempre visible.
         </p>
         <button onClick={handleStart}>
-          {isAuthenticated ? 'Ir a mi cuenta' : 'Comenzar ahora'}
+          {isAuthenticated ? 'Ir a mi cuenta' : 'Login o registrarse'}
         </button>
       </section>
     </div>
